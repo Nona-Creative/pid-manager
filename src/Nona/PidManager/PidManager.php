@@ -2,6 +2,8 @@
 
 namespace Nona\PidManager;
 
+use \Exception;
+
 /**
  * Process ID manager.
  *
@@ -60,7 +62,7 @@ class PidManager
      * Lock the process by writing a pid file.
      *
      * @return bool
-     * @throws \Exception
+     * @throws Exception
      */
     public function lock()
     {
@@ -75,8 +77,7 @@ class PidManager
 
     /**
      * Unlock the process by removing the pid file.
-     *
-     * @throws \Exception
+     * @return bool Returns true if lock file removed
      */
     public function unlock()
     {
@@ -84,9 +85,9 @@ class PidManager
             unlink($this->pid);
 
             return true;
-        } else {
-            return $this->_handleError('Lock file does not exist. Unable to unlock');
         }
+
+        return false;
     }
 
     /**
@@ -94,15 +95,28 @@ class PidManager
      *
      * Note: This method does not work on Windows as it requires /proc to get the pid()
      *
-     * @throws \Exception thrown when running on windows.
+     * @throws Exception thrown when running on windows.
      * @return bool returns true if owner of current lock
      */
     public function isLockOwner() {
         if ($this->_isWindows()) {
-            throw new \Exception('Unable to use isLockOwner() on a Windows system as it requires /proc');
+            throw new Exception('Unable to use isLockOwner() on a Windows system as it requires /proc');
         }
 
         return ($this->_getLockProcessId() === getmypid());
+    }
+
+
+    public function withLock(callable $callback) {
+        try {
+            $this->lock();
+
+            call_user_func($callback);
+        } catch (Exception $e) {
+            throw $e;
+        } finally {
+            $this->unlock();
+        }
     }
 
 
@@ -127,12 +141,12 @@ class PidManager
      *
      * @param string $message Exception message
      * @return bool returns false
-     * @throws \Exception
+     * @throws Exception
      */
     private function _handleError($message)
     {
         if ($this->isThrowExceptions) {
-            throw new \Exception($message);
+            throw new Exception($message);
         } else {
             return false;
         }
