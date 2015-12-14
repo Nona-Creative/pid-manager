@@ -4,7 +4,7 @@ PID manager to lock php file execution.
 ## Installation
 Install the latest version
 
-``` composer require monolog/monolog ```
+``` composer require nona-creative/pid-manager ```
 
 ## Basic Usage
 
