@@ -28,13 +28,16 @@ class PidManager
      * @param string $basePath path to pid file. defaults to current directory
      * @param bool $isThrowExceptions Throws exceptions when true.
      */
-    public function __construct($pidFilename, $basePath = './', $isThrowExceptions = true)
+    public function __construct($pidFilename, $basePath = null, $isThrowExceptions = true)
     {
+        // Here we override the base path if not supplied
+        $basePath = $basePath === null ? '.' . DIRECTORY_SEPARATOR : $basePath;
+
         $this->pidFilename = $pidFilename;
         $this->basePath = $basePath;
         $this->isThrowExceptions = $isThrowExceptions;
         // build the pid path
-        $this->pid = $basePath . '/' . $pidFilename;
+        $this->pid = $basePath . DIRECTORY_SEPARATOR . $pidFilename;
     }
 
     /**
