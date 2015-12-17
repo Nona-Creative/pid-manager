@@ -14,8 +14,8 @@ Install the latest version
 $pidManager = new \Nona\PidManager('test.lock', './');
 
 $pidManager->withLock(function() {
-  // Do your processing here
-  // ...
+    // Do your processing here
+    // ...
 });
 
 ```
