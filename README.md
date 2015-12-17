@@ -13,11 +13,24 @@ Install the latest version
 
 $pidManager = new \Nona\PidManager('test.lock', './');
 
+$pidManager->withLock(function() {
+  // Do your processing here
+  // ...
+});
+
+```
+
+
+``` php
+<?php
+
+$pidManager = new \Nona\PidManager('test.lock', './');
+
 if (!$pidManager->isLocked()) {
     try {
         $pidManager->lock();
 
-        // Do you processing here
+        // Do your processing here
         // ...
     } finally {
         $pidManager->unlock();
