@@ -67,9 +67,7 @@ class PidManager
     public function lock()
     {
         if (!$this->isLocked()) {
-            file_put_contents($this->pid, getmypid());
-
-            return true;
+            return (bool) @file_put_contents($this->pid, getmypid());
         } else {
             return $this->_handleError('Lock file (' . $this->pid . ') exists already. Unable to lock');
         }
